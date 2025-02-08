@@ -1,4 +1,5 @@
 import nfc
+import ndef
 import os
 
 class WifiConnector:
@@ -17,13 +18,15 @@ class WifiConnector:
         if clf:
             print("NFC reader connected. Waiting for tag...")
 
+            # callback method
             def on_connect(tag):
                 # check that the tag support NDEF format
                 if tag.ndef:
                     # creates a new record to store the WiFi credentials
-                    record = nfc.ndef.TextRecord(wifi_data)
+                    record = ndef.TextRecord(wifi_data.encode("utf-8"))
                     # assigns the NDEF message to the NFC tag
                     tag.ndef.message = nfc.ndef.Message(record)
+
                     print(f"Successfully wrote Wi-Fi credentials for {self.wifi_ssid} to NFC tag!")
                 else:
                     print("Tag does not support NDEF.")
